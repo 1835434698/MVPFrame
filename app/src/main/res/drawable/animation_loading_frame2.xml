@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00031"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00032"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00033"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00034"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00035"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00036"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00037"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00038"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00039"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00040"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00041"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00042"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00043"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00044"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00045"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00046"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00047"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00048"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00049"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00050"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00051"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00052"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00053"/>
+    <item  android:duration="30" android:drawable="@mipmap/shauxin1_00054"/>
+</animation-list>

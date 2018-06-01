@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_6"
+        android:paddingTop="@dimen/dp_4"
+        android:layout_alignParentBottom="true"
+        android:background="#DCDCDE">
+
+        <RelativeLayout
+            android:id="@+id/tab1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/tab1_image"
+                    android:layout_width="32dip"
+                    android:layout_height="32dip"
+                    android:padding="5dip"
+                    android:src="@drawable/tab_1_btn" />
+
+                <TextView
+                    android:id="@+id/tab1_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="首页"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab2"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/tab2_image"
+                    android:layout_width="32dip"
+                    android:layout_height="32dip"
+                    android:padding="5dip"
+                    android:src="@drawable/tab_2_btn" />
+
+                <TextView
+                    android:id="@+id/tab2_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="附近"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab3"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/tab3_image"
+                    android:layout_width="32dip"
+                    android:layout_height="32dip"
+                    android:padding="5dip"
+                    android:src="@drawable/tab_3_btn" />
+
+                <TextView
+                    android:id="@+id/tab3_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="逛一逛"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab4"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/tab4_image"
+                    android:layout_width="32dip"
+                    android:layout_height="32dip"
+                    android:padding="5dip"
+                    android:src="@drawable/tab_4_btn" />
+
+                <TextView
+                    android:id="@+id/tab4_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="我的"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab5"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/tab5_image"
+                    android:layout_width="32dip"
+                    android:layout_height="32dip"
+                    android:padding="5dip"
+                    android:src="@drawable/tab_5_btn" />
+
+                <TextView
+                    android:id="@+id/tab5_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="客服"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+    <FrameLayout
+        android:paddingTop="@dimen/dp_25"
+        android:id="@+id/fragment_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_layout" />
+
+</RelativeLayout>
