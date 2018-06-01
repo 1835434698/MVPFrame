@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+def static releaseTime() {
+    return new Date().format("MM-dd_HH-mm", TimeZone.getTimeZone("GMT+8"))
+}
+
 android {
     compileSdkVersion 27
     buildToolsVersion '27.0.0'
@@ -11,10 +15,68 @@ android {
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+
+    applicationVariants.all {variant ->
+        variant.outputs.each{ output ->
+            def outputFile = output.outputFile
+            if(outputFile != null && outputFile.name.endsWith('.apk')){
+                File outputDirectory = new File(outputFile.parent)
+                def fileName
+                if(variant.buildType.name == "release"){
+                    fileName = "yang${defaultConfig.versionName}_${(releaseTime())}_${variant.productFlavors[0].name}.apk"
+                    output.outputFile = new File(outputDirectory, fileName)
+                }
+            }
+        }
+    }
+
+    productFlavors{
+        tzy{}
+    }
+
+//    android {
+//        lintOptions {
+//            checkReleaseBuilds false
+//            // Or, if you prefer, you can continue to check for errors in release builds,
+//            // but continue the build even when errors are found:
+//            abortOnError false
+//        }
+//    }
+
+//    signingConfigs {
+//        config {
+//            keyAlias 'jieyue'
+//            keyPassword 'jieyue2015'
+//            storeFile file('../key.keystore')
+//            storePassword 'jieyue2015'
+//        }
+//    }
+
+//    sourceSets {
+//        main {
+//            jniLibs.srcDirs = ['libs']
+//        }
+//    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            //是否优化zip
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            minifyEnabled true
+//            signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+//            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
+//            debuggable true
         }
     }
 }
