@@ -280,6 +280,22 @@ public class BaseActivity extends AppCompatActivity implements IActivity, EasyPe
             }
         }
     }
+    
+    /**
+     * 隐藏软键盘
+     * @param view 软键盘属于哪个View 的。activity可直接传递null
+     */
+    protected void hideKeyBoard(View view) {
+        if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+            InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (view != null){
+                view = getCurrentFocus();
+            }
+            if (view != null) {
+                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
+    }
 
     @Override
     protected void onDestroy() {
