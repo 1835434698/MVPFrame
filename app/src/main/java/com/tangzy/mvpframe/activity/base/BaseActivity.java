@@ -2,17 +2,24 @@ package com.tangzy.mvpframe.activity.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -25,11 +32,15 @@ import com.tangzy.mvpframe.R;
 import com.tangzy.mvpframe.core.presenter.MvpPresenterIml;
 import com.tangzy.mvpframe.core.view.MvpView;
 import com.tangzy.mvpframe.manager.Constant;
+import com.tangzy.mvpframe.manager.MessgeEvent;
 import com.tangzy.mvpframe.permission.EasyPermissions;
 import com.tangzy.mvpframe.util.Logger;
 import com.tangzy.mvpframe.util.StatusBarUtil;
 import com.tangzy.mvpframe.view.CustomListViewHeader;
 import com.tangzy.mvpframe.view.ProgressDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -43,29 +54,60 @@ import butterknife.Unbinder;
  * Created by Administrator on 2018/5/31.
  */
 
+
+/**
+ * Created by Administrator on 2017/10/26.
+ */
 public class BaseActivity extends AppCompatActivity implements IActivity, EasyPermissions.PermissionCallbacks, MvpView {
-//    private static final String TAG = "";
-    protected String TAG = "BaseActivity";
+    protected static String TAG = "BaseActivity";
     private Activity activity;
     protected boolean isFirstLayout = true;
     private Unbinder unbinder;
 
-    private TextView tv_title;
+    private TextView mTitleView;
     // 标题栏左侧，右侧图标
-    private ImageView iv_left;
-    private List<MvpPresenterIml> mvpPresenterImls;
-
-    private SmartRefreshLayout mRefreshLayout;
-    private CustomListViewHeader customHead;
-    private LinearLayout content_view;
+    private ImageView mLeftBtn;
     private LinearLayout titleLayout;
 
+
+    public static final int REQUEST_CODE_CALLBACK = 0x1000;
+    public static final String EXTRA_ACTIVITY_NAME = "_extra_activity_name";
+    public static final String EXTRA_START_CALLBACK = "_extra_start_callback";
+
+    public static final String ONE_LAYOUT = "OneLayout";
+    public static final String TWO_LAYOUT = "TwoLayout";
+
+    private static final int DIALOG_WAIT = 102;
+    private static final int MSG_WHAT_SHOW_WAIT_DIALOG = 104;
+    private static final int MSG_WHAT_HIDE_WAIT_DIALOG = 105;
+    private String showMessage = "";
+    private int dialogId = -1;
+
+    private List<MvpPresenterIml> mvpPresenterImls;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         activity = this;
         startTransition();
         TAG = getClass().getSimpleName();
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(R.layout.activity_base);
+        if (layoutResID < 0) {
+            return;
+        }
+        setView(layoutResID);
+        unbinder = ButterKnife.bind(this);
+        initTitleBar();
+        setStatusBarFontIconDark(true);
+        initStatusBar();
+    }
+
+    protected void initStatusBar() {
+        StatusBarUtil.setTranslucentForImageView(BaseActivity.this, 0);
     }
 
     public void addPresenter(MvpPresenterIml presenterIml){
@@ -76,19 +118,17 @@ public class BaseActivity extends AppCompatActivity implements IActivity, EasyPe
         mvpPresenterImls.add(presenterIml);
     }
 
-    @Override
-    public void setContentView(int layoutResID) {
-        super.setContentView(R.layout.activity_base);
-        if (layoutResID < 0) {
-            return;
+    public void cleanPresenter(){
+        Logger.d(TAG, "cleanPresenter");
+        if (mvpPresenterImls !=null && mvpPresenterImls.size() > 0){
+            int size = mvpPresenterImls.size();
+            for (int i=0; i < size; i ++){
+                MvpPresenterIml mvpPresenterIml = mvpPresenterImls.get(i);
+                if (mvpPresenterIml != null)
+                    Logger.d(TAG, "detachView");
+                mvpPresenterIml.detachView(false);
+            }
         }
-        setView(layoutResID);
-        initTitleBar();
-        initView();
-        initStatusBar();
-        setStatusBarFontIconDark(false);
-        unbinder = ButterKnife.bind(this);
-//        EventBus.getDefault().register(this);
     }
 
     protected void startTransition(){
@@ -98,108 +138,19 @@ public class BaseActivity extends AppCompatActivity implements IActivity, EasyPe
         overridePendingTransition(0, R.anim.slide_out_right);
     }
 
-
-    protected void hideTitleLeft() {
-        if (iv_left != null)
-            iv_left.setVisibility(View.GONE);
+    @Override
+    protected void onDestroy() {
+        unbinder.unbind();
+        super.onDestroy();
+        cleanPresenter();
     }
 
-    protected void hideTitle() {
-        if (titleLayout != null)
-            titleLayout.setVisibility(View.GONE);
-    }
-    protected void setTitle(String title) {
-        if (tv_title != null && title != null)
-            tv_title.setText(title);
+    @Override
+    public void finish() {
+        super.finish();
+        stopTransition();
     }
 
-
-    /**
-     * 设置Activity的内容布局，取代setContentView（）方法
-     */
-    private void setView(int layoutResID) {
-        LinearLayout content_linear = this.findViewById(R.id.content_view);
-        content_linear.addView(View.inflate(this, layoutResID, null), new LinearLayout.LayoutParams(-1, -1));
-        initAllViewForActivity(content_linear);
-    }
-
-    private void initAllViewForActivity(final ViewGroup vg) {
-        vg.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onGlobalLayout() {
-                vg.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                if (activity != null && activity instanceof IActivity) {
-                    ((IActivity) activity).onActivityFirstLayout();
-                }
-            }
-        });
-    }
-
-    private void initTitleBar() {
-        titleLayout = findViewById(R.id.titleLayout);
-        tv_title = findViewById(R.id.tv_title);
-        iv_left = findViewById(R.id.iv_left);
-
-        iv_left.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickBack();
-            }
-        });
-    }
-
-    private void initView() {
-        content_view = findViewById(R.id.content_view);
-        ViewGroup.LayoutParams layoutParams = content_view.getLayoutParams();
-        layoutParams.height = Constant.heightScreen - this.getResources().getDimensionPixelOffset(R.dimen.dp_70);
-        content_view.setLayoutParams(layoutParams);
-        mRefreshLayout = findViewById(R.id.load_more_list_view_ptr_frame);
-        customHead = findViewById(R.id.customHead);
-        setEnableRefresh(false);
-        setEnableLoadmore(false);
-    }
-
-    protected void finishRefresh(){
-        if (mRefreshLayout != null)
-            mRefreshLayout.finishRefresh();
-    }
-    protected void finishLoadmore(){
-        if (mRefreshLayout != null)
-            mRefreshLayout.finishLoadmore();
-    }
-
-    protected void setOnRefreshListener(OnRefreshListener listener){
-        if (mRefreshLayout != null){
-            setEnableRefresh(true);
-            mRefreshLayout.setOnRefreshListener(listener);
-        }
-    }
-    protected void setOnLoadmoreListener(OnLoadmoreListener listener){
-        if (mRefreshLayout != null){
-            setEnableLoadmore(true);
-            mRefreshLayout.setOnLoadmoreListener(listener);
-        }
-    }
-    protected void setEnableLoadmore(boolean isMore){
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setEnableLoadmore(isMore);
-        }
-    }
-    protected void setEnableRefresh(boolean isRefresh){
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setEnableRefresh(isRefresh);
-        }
-    }
-    protected void setLeftView(int visibitity){
-        if (iv_left != null){
-            iv_left.setVisibility(visibitity);
-        }
-    }
-
-    private void initStatusBar() {
-        StatusBarUtil.setTranslucentForImageView(BaseActivity.this, 0);
-    }
     /**
      * 设置Android状态栏的字体颜色，状态栏为亮色的时候字体和图标是黑色，状态栏为暗色的时候字体和图标为白色
      *
@@ -254,6 +205,15 @@ public class BaseActivity extends AppCompatActivity implements IActivity, EasyPe
         }
     }
 
+    public TextView getTitleView() {
+        return mTitleView;
+    }
+
+    public void setTitleText(String title) {
+        if (mTitleView!=null && title != null)
+            mTitleView.setText(title);
+    }
+
     protected void onClickBack(){
         finish();
     }
@@ -263,24 +223,86 @@ public class BaseActivity extends AppCompatActivity implements IActivity, EasyPe
         onClickBack();
     }
 
+    /**
+     * 设置Activity的内容布局，取代setContentView（）方法
+     */
+    public void setView(int layoutResID) {
+        LinearLayout content_linear = this.findViewById(R.id.content_view);
+        content_linear.addView(View.inflate(this, layoutResID, null), new LinearLayout.LayoutParams(-1, -1));
+        initAllViewForActivity(content_linear);
+    }
+
+    private void initAllViewForActivity(final ViewGroup vg) {
+        vg.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onGlobalLayout() {
+                vg.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if (activity != null && activity instanceof IActivity) {
+                    ((IActivity) activity).onActivityFirstLayout();
+                }
+            }
+        });
+    }
+    //
+    public void initTitleBar() {
+        mTitleView = findViewById(R.id.tv_title);
+        mLeftBtn = findViewById(R.id.title_left_img);
+        titleLayout = findViewById(R.id.included_title);
+
+        mLeftBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                onClickBack();
+            }
+        });
+
+    }
+
+    public void hideTitle() {
+        if (titleLayout != null)
+            titleLayout.setVisibility(View.GONE);
+    }
+
+    public void setTitleLayout(String layout) {
+        if (titleLayout.getVisibility() != View.VISIBLE){
+            titleLayout.setVisibility(View.VISIBLE);
+        }
+        if (ONE_LAYOUT.equals(layout)){
+            titleLayout.setBackgroundColor(getResources().getColor(R.color.color_EAEAEA));
+            setStatusBarFontIconDark(true);
+        }else if (TWO_LAYOUT.equals(layout)){
+            titleLayout.setBackgroundColor(getResources().getColor(R.color.color_53B890));
+        }
+//        initStatusBar();
+    }
+
+    public void setLeftShow(boolean isShow) {
+        if (mLeftBtn != null) {
+            if (isShow){
+                mLeftBtn.setVisibility(View.VISIBLE);
+            }else {
+                mLeftBtn.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Logger.i(getClass().getSimpleName(), "onActivityResult：" + getClass().getSimpleName() + "   intent is null： " + (data == null));
+        if (!onActivityResultC(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    /**
+     * 当activity第一次layout之后
+     */
     @Override
     public void onActivityFirstLayout() {
         isFirstLayout = false;
     }
-
-    public void cleanPresenter(){
-        Logger.d(TAG, "cleanPresenter");
-        if (mvpPresenterImls !=null && mvpPresenterImls.size() > 0){
-            int size = mvpPresenterImls.size();
-            for (int i=0; i < size; i ++){
-                MvpPresenterIml mvpPresenterIml = mvpPresenterImls.get(i);
-                if (mvpPresenterIml != null)
-                    Logger.d(TAG, "detachView");
-                mvpPresenterIml.detachView(false);
-            }
-        }
-    }
-    
     /**
      * 隐藏软键盘
      * @param view 软键盘属于哪个View 的。activity可直接传递null
@@ -297,24 +319,30 @@ public class BaseActivity extends AppCompatActivity implements IActivity, EasyPe
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        unbinder.unbind();
-        cleanPresenter();
-//        EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        stopTransition();
-    }
-
     protected static final int RC_PERM = 123;
+
     protected static int reSting = R.string.ask_again;//默认提示语句
     private CheckPermListener mListener;
+
+    @Override
+    public Context obtainContext() {
+        return null;
+    }
+
+    @Override
+    public Activity obtainActivity() {
+        return null;
+    }
+
+    @Override
+    public void showLoading(String waitMessage) {
+        ProgressDialog.getInstance(this).setMessage(waitMessage).show();
+    }
+
+    @Override
+    public void hideLoading() {
+        ProgressDialog.getInstance(this).dismiss();
+    }
 
     public interface CheckPermListener {
         //权限通过后的回调方法
@@ -377,34 +405,131 @@ public class BaseActivity extends AppCompatActivity implements IActivity, EasyPe
     }
 
     /**
+     * 启动一个插入型Activity，自带转场
+     * 例如，当你在A中启动B，如果你想在B中启动C，同时关闭A
+     * 则在A中使用startCallbackActivity启动B
+     * 在B中使用startResponseActivity启动C即可
+     *
+     * @param intent
+     */
+    public void startCallbackActivity(Intent intent) {
+        startActivityForResult(intent, REQUEST_CODE_CALLBACK);
+    }
+    /**
+     * 启动一个Activity，自带转场，同时关闭自己
+     * 例如，当你在A中启动B，如果你想在B中启动C，同时关闭B
+     * 则在A中使用startCallbackActivity启动B
+     * 在B中使用startResponseActivity，关闭B并启动C即可
+     *
+     * @param intent
+     */
+    public void startResponseActivity(Intent intent) {
+        Logger.i(TAG, "startResponseActivity：" + "   intent is null： " + (intent == null));
+        setResult(Activity.RESULT_FIRST_USER, intent);
+        finish();
+    }
+
+    /**
+     *
+     * @param clazz
+     */
+    public void finishToActivity(Class<? extends Activity> clazz){
+        Logger.i(TAG, "finishToActivity clazz:" + clazz.getName());
+        if (!getClass().getCanonicalName().equals(clazz.getCanonicalName())){
+            Intent intent = new Intent();
+            setResult(Activity.RESULT_FIRST_USER, intent);
+            intent.putExtra(EXTRA_ACTIVITY_NAME, clazz.getCanonicalName());
+            finish();
+        }
+    }
+
+    /**
+     * 关闭从[自己到目标clazz]之间的所有Activity，并启动一个新的Activity
+     * 例如，当你在A中启动B，B中启动C->D->E->F。此时想启动Z，同时关闭之前除A以外所有Activity
+     * 则在从A到Y启动Activity都使用startCallbackActivity方法。而在Y->Z使用
+     * startResponseActivityFromAssignedActivity，第一个参数选Z的intent，
+     * 第二个参数选用想要关闭的最前面一个Activity也就是B。
+     * <p>
+     * 如果仅仅是想关闭从Z到A的所有Activity而不开新的Activity，则此处传入一个不带class和Action的干净的 Intent 即可
+     *
+     * @param clazz  打开新Activity时所要关闭的最后一个Activity
+     * @param intent
+     */
+    public void startResponseActivityFromAssignedActivity(Intent intent, Class<? extends Activity> clazz) {
+        Logger.i(TAG, "startResponseActivityFromAssignedActivity  intent:" + intent + " clazz:" + clazz.getName());
+        if (getClass().getCanonicalName().equals(clazz.getCanonicalName())){
+            startResponseActivity(intent);
+        }else {
+            setResult(Activity.RESULT_FIRST_USER, intent);
+            intent.putExtra(EXTRA_ACTIVITY_NAME, clazz.getCanonicalName());
+            finish();
+        }
+    }
+
+
+    //只有ui.onActivityResult里面的代码都不执行才会交给外部调用者的super.onActivityResult处理
+    /*package*/
+    boolean onActivityResultC(int requestCode, int resultCode, Intent data) {
+        Logger.i(TAG, "onActivityResult ------ Intent data is null： " + (data == null) + "  requestCode:" + requestCode + "   resultCode:" + resultCode);
+        if (requestCode == REQUEST_CODE_CALLBACK) {
+            if (resultCode == Activity.RESULT_FIRST_USER) {
+                if (data != null) {
+                    try {
+                        String activityName = data.getStringExtra(EXTRA_ACTIVITY_NAME);
+                        Logger.e(TAG, "onActivityResult  this Activity name:" + getClass().getCanonicalName() + "   target Activity name:" + activityName);
+                        if (!TextUtils.isEmpty(activityName)) {
+                            Logger.i(TAG, "UILayer的onActivityResult方法执行了，并且activityName不为空");
+                            @SuppressWarnings("unchecked")
+                            Class<? extends Activity> clazz = (Class<? extends Activity>) Class.forName(activityName);
+                            if (getClass().getCanonicalName().equals(activityName)) {
+                                Logger.i(TAG, "onActivityResult");
+                                if (data.getBooleanExtra(EXTRA_START_CALLBACK, false)) {
+                                    data.removeExtra(EXTRA_ACTIVITY_NAME);
+                                    startResponseActivity(data);
+                                    return true;
+                                    /*EXTRA_START_CALLBACK 为 true 代表在名为 activityName 的activity结束之后，将 data 交给上一个activity去处理。
+                                     反之，如果为 false 代表会在当前activity结束后立即在上个activity基础上用 data 再开启一个activity。*/
+                                }
+                                finish();
+                                if (isIntentValid(data)) {
+                                    startActivity(data);
+                                }
+                                return true;
+                            }
+                            startResponseActivityFromAssignedActivity(data, clazz);
+                            return true;
+                        }
+                        //FIXME
+                    } catch (Exception ignore) {
+                    }
+                    if (isIntentValid(data)) {
+                        startCallbackActivity(data);//只要data不为空就会开启一个新的Activity
+                    }
+                    return true;
+                }
+            }
+        }else if (requestCode == EasyPermissions.SETTINGS_REQ_CODE) {
+            //设置返回
+        }
+        return false;
+    }
+
+    public boolean isIntentValid(Intent intent) {//判断intent中是否包含一个明确的意图，即是否有明确的Activity要跳转
+        if (intent == null || intent.getComponent() == null)
+            return false;
+        return !TextUtils.isEmpty(intent.getComponent().getClassName() + intent.getAction());
+    }
+
+    /**
      * 隐藏软键盘
      */
     protected void hideKeyBoard() {
         if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-            InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager  inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             if (getCurrentFocus() != null)
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
-    @Override
-    public Context obtainContext() {
-        return this;
-    }
-
-    @Override
-    public Activity obtainActivity() {
-        return this;
-    }
-
-    @Override
-    public void showLoading(String waitMessage) {
-        ProgressDialog.getInstance(this).setMessage(waitMessage).show();
-    }
-
-    @Override
-    public void hideLoading() {
-        ProgressDialog.getInstance(this).dismiss();
-    }
 }

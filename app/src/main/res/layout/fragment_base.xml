@@ -1,27 +1,6 @@
-<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/load_more_list_view_ptr_frame"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-app:srlPrimaryColor="#F9F9F9">
-<com.tangzy.mvpframe.view.CustomListViewHeader
-    android:id="@+id/customHead"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
-<ScrollView
-    android:id="@+id/scrollView"
-    android:fillViewport="true"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_content_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fadingEdge="none"
-    android:overScrollMode="never"
-    android:scrollbars="none">
-    <LinearLayout
-        android:id="@+id/fragment_content_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-    </LinearLayout>
-
-</ScrollView>
-</com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    android:orientation="vertical" >
+</LinearLayout>

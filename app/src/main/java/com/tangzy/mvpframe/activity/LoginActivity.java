@@ -43,8 +43,9 @@ public class LoginActivity extends BaseActivity implements LoginView{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        setTitle("登录");
-        hideTitleLeft();
+        setTitleText("登录");
+        setLeftShow(false);
+//        hideTitle();
         loginPresenter = new LoginPresenter(this);
 
         button.setOnClickListener(new NoDoubleClickListener() {

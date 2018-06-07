@@ -79,7 +79,8 @@ public class OkHttpManager{
     private void getResult(final String uri, JSONObject httpParams, boolean isPost, boolean isEnc) {
         final ResponseListener listener = map.get(uri.hashCode());
         map.remove(uri.hashCode());
-
+        if (listener == null)
+            return;
         url = Constant.url+uri;
         if (cookieStore == null){
             cookieStore = new PersistentCookieStore(Constant.app);

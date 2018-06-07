@@ -11,29 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 import com.tangzy.mvpframe.R;
 import com.tangzy.mvpframe.adapter.HomeAdapter;
 import com.tangzy.mvpframe.fragment.base.BaseFragment;
 import com.tangzy.mvpframe.util.Logger;
 import com.tangzy.mvpframe.view.CanForbidViewPager;
 import com.tangzy.mvpframe.view.CustomListView;
-import com.tangzy.mvpframe.view.CustomViewPager;
-
+import com.tangzy.mvpframe.view.CustomListViewHeader;
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
-
 
 /**
  * Created by Administrator on 2017/10/19.
  */
-
 public class FirstFragment extends BaseFragment {
 
     private static final String TAG = "FirstFragment";
@@ -44,6 +38,13 @@ public class FirstFragment extends BaseFragment {
     TextView rl_viewpager_text;
     @BindView(R.id.lv_home)
     CustomListView lv_home;
+
+    @BindView(R.id.load_more_list_view_ptr_frame)
+    SmartRefreshLayout mRefreshLayout;
+    @BindView(R.id.customHead)
+     CustomListViewHeader customHead;
+
+
     private HomeAdapter homeAdapter;
     private List<String> homes = new ArrayList<>();
 
@@ -80,17 +81,17 @@ public class FirstFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         setView(R.layout.fragment_first);
         init();
-        setOnRefreshListener(new OnRefreshListener() {
+        customHead.setStyle(2);
+        mRefreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                getData(1);
+            }
+
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 Logger.d("tangzy", "onRefresh001");
                 getData(0);
-            }
-        });
-        setOnLoadmoreListener(new OnLoadmoreListener() {
-            @Override
-            public void onLoadmore(RefreshLayout refreshlayout) {
-                getData(1);
             }
         });
     }
@@ -122,12 +123,11 @@ public class FirstFragment extends BaseFragment {
         for (int i=0; i<15; i++){
             homes.add(""+i);
         }
-        finishRefresh();
-        finishLoadmore();
+        mRefreshLayout.finishRefresh();
+        mRefreshLayout.finishLoadmore();
+//        finishRefresh();
+//        finishLoadmore();
         homeAdapter.notifyDataSetChanged();
-        if (ik ==0){
-            getScrollView().smoothScrollTo(0,0);
-        }
     }
 
     private void startPicCicle() {

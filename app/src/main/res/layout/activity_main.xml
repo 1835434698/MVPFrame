@@ -2,6 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/fragment_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_layout" />
+
     <LinearLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
@@ -9,7 +15,7 @@
         android:paddingBottom="@dimen/dp_6"
         android:paddingTop="@dimen/dp_4"
         android:layout_alignParentBottom="true"
-        android:background="#DCDCDE">
+        android:background="@color/color_DCDCDE">
 
         <RelativeLayout
             android:id="@+id/tab1"
@@ -162,11 +168,5 @@
         </RelativeLayout>
 
     </LinearLayout>
-    <FrameLayout
-        android:paddingTop="@dimen/dp_25"
-        android:id="@+id/fragment_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_layout" />
 
 </RelativeLayout>

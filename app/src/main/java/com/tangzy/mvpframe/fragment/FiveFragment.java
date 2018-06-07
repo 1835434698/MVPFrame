@@ -31,19 +31,19 @@ public class FiveFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         setView(R.layout.fragment_five);
         init();
-        setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                Logger.d("tangzy", "onRefresh005");
-                tv_tab2.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Logger.d("tangzy", "finishRefresh005");
-                        finishRefresh();
-                    }
-                }, 10000);
-            }
-        });
+//        setOnRefreshListener(new OnRefreshListener() {
+//            @Override
+//            public void onRefresh(RefreshLayout refreshlayout) {
+//                Logger.d("tangzy", "onRefresh005");
+//                tv_tab2.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Logger.d("tangzy", "finishRefresh005");
+//                        finishRefresh();
+//                    }
+//                }, 10000);
+//            }
+//        });
     }
 
     @Override

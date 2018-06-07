@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:fadingEdge="none"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
     <LinearLayout
-        android:id="@+id/ll_tab2"
-        android:layout_width="@dimen/dp_90"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_tab2"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/ll_tab2"
+            android:layout_width="@dimen/dp_90"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="第二页"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/sp_20" />
+            android:layout_marginLeft="@dimen/dp_20"
+            android:orientation="vertical">
 
-        <View
-            android:id="@+id/v_tab2"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_2"
-            android:layout_marginTop="@dimen/dp_3"
-            android:background="#1395D7"/>
+            <TextView
+                android:id="@+id/tv_tab2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="第二页"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/sp_20" />
+
+            <View
+                android:id="@+id/v_tab2"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_2"
+                android:layout_marginTop="@dimen/dp_3"
+                android:background="#1395D7" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

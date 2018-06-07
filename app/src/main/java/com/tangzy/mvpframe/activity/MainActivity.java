@@ -11,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tangzy.mvpframe.R;
 import com.tangzy.mvpframe.activity.base.BaseActivity;
 import com.tangzy.mvpframe.fragment.FirstFragment;
@@ -23,8 +21,6 @@ import com.tangzy.mvpframe.fragment.ThirdFragment;
 import com.tangzy.mvpframe.listener.NoDoubleClickListener;
 import com.tangzy.mvpframe.util.Logger;
 import com.tangzy.mvpframe.util.Utils;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
@@ -74,6 +70,12 @@ public class MainActivity extends BaseActivity {
         setTabView(0);
     }
 
+//    @Override
+//    protected void initStatusBar() {
+////        StatusBarUtil.setTransparentForImageViewInFragment(this, null);
+//        super.initStatusBar();
+//    }
+
     private NoDoubleClickListener noDoubleClickListener = new NoDoubleClickListener() {
         @Override
         public void onNoDoubleClick(View v) {
@@ -113,7 +115,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void setTabView(int tab) {//选择当前处于显示状态的tab
-        Logger.d(TAG, "setTab = "+tab);
+//        Logger.d(TAG, "setTab = "+tab);
         // TODO Auto-generated method stub
         if (currentIndex == tab) {
             return;

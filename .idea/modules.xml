@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MVPFrame.iml" filepath="$PROJECT_DIR$/MVPFrame.iml" />
+      <module fileurl="file://D:\workspace\AndroidStudio\new\MVPFrame_N\MVPFrame.iml" filepath="D:\workspace\AndroidStudio\new\MVPFrame_N\MVPFrame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MVPFrame_N.iml" filepath="$PROJECT_DIR$/MVPFrame_N.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/httpmanagerlib/httpmanagerlib.iml" filepath="$PROJECT_DIR$/httpmanagerlib/httpmanagerlib.iml" />
     </modules>

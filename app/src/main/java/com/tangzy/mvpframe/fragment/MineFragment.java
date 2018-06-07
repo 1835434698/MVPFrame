@@ -27,19 +27,19 @@ public class MineFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         Logger.d(TAG, "onActivityCreated");
         setView(R.layout.fragment_mine);
-        setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                Logger.d("tangzy", "onRefresh003");
-                tv_order_all.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Logger.d("tangzy", "finishRefresh003");
-                        finishRefresh();
-                    }
-                }, 10000);
-            }
-        });
+//        setOnRefreshListener(new OnRefreshListener() {
+//            @Override
+//            public void onRefresh(RefreshLayout refreshlayout) {
+//                Logger.d("tangzy", "onRefresh003");
+//                tv_order_all.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Logger.d("tangzy", "finishRefresh003");
+//                        finishRefresh();
+//                    }
+//                }, 10000);
+//            }
+//        });
         initData();
     }
 

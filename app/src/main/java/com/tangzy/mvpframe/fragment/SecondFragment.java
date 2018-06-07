@@ -30,19 +30,19 @@ public class SecondFragment extends BaseFragment {
         Logger.d(TAG, "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
         setView(R.layout.fragment_second);
-        setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                Logger.d("tangzy", "onRefresh002");
-                tv_tab2.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Logger.d("tangzy", "finishRefresh002");
-                        finishRefresh();
-                    }
-                }, 10000);
-            }
-        });
+//        setOnRefreshListener(new OnRefreshListener() {
+//            @Override
+//            public void onRefresh(RefreshLayout refreshlayout) {
+//                Logger.d("tangzy", "onRefresh002");
+//                tv_tab2.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Logger.d("tangzy", "finishRefresh002");
+//                        finishRefresh();
+//                    }
+//                }, 10000);
+//            }
+//        });
         init();
     }
 

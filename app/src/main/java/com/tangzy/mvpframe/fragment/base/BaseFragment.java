@@ -31,10 +31,6 @@ public class BaseFragment extends Fragment {
     private Unbinder unbinder;
     public View root;
     //    private LoadingView mLoadingView = null;
-    private SmartRefreshLayout mRefreshLayout;
-    private CustomListViewHeader customHead;
-    private ScrollView scrollView;
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         mPageName = getClass().getSimpleName();
@@ -52,20 +48,16 @@ public class BaseFragment extends Fragment {
         LinearLayout content_linear = (LinearLayout) findViewById(R.id.fragment_content_view);
         content_linear.addView(View.inflate(getActivity(), layoutResID, null), new LinearLayout.LayoutParams(-1, -1));
         unbinder = ButterKnife.bind(this,root);
-        mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.load_more_list_view_ptr_frame);
-        customHead = (CustomListViewHeader) findViewById(R.id.customHead);
-        scrollView = (ScrollView) findViewById(R.id.scrollView);
-        customHead.setStyle(2);
-        setEnableRefresh(false);
-        setEnableLoadmore(false);
+//        mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.load_more_list_view_ptr_frame);
+//        customHead = (CustomListViewHeader) findViewById(R.id.customHead);
+//        scrollView = (ScrollView) findViewById(R.id.scrollView);
+//        customHead.setStyle(2);
+//        setEnableRefresh(false);
+//        setEnableLoadmore(false);
     }
 
     public View findViewById(int viewID){
         return root.findViewById(viewID);
-    }
-
-    protected ScrollView getScrollView() {
-        return scrollView;
     }
 
     @Override
@@ -78,39 +70,6 @@ public class BaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-
-    protected void finishRefresh(){
-        if (mRefreshLayout != null)
-            mRefreshLayout.finishRefresh();
-    }
-    protected void finishLoadmore(){
-        if (mRefreshLayout != null)
-            mRefreshLayout.finishLoadmore();
-    }
-
-    protected void setOnRefreshListener(OnRefreshListener listener){
-        if (mRefreshLayout != null){
-            setEnableRefresh(true);
-            mRefreshLayout.setOnRefreshListener(listener);
-        }
-    }
-    protected void setOnLoadmoreListener(OnLoadmoreListener listener){
-        if (mRefreshLayout != null){
-            setEnableLoadmore(true);
-            mRefreshLayout.setOnLoadmoreListener(listener);
-        }
-    }
-    protected void setEnableLoadmore(boolean isMore){
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setEnableLoadmore(isMore);
-        }
-    }
-    protected void setEnableRefresh(boolean isRefresh){
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setEnableRefresh(isRefresh);
-        }
     }
 
 }
